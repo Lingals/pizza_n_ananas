@@ -28,7 +28,6 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), ClientPage.class);
                 startActivity(i);
-                finish();
             }
         });
 
@@ -37,7 +36,6 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), AdminOrdersList.class);
                 startActivity(i);
-                finish();
             }
         });
     }
