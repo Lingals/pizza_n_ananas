@@ -18,16 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/client_page_pizzas_b"
-            android:layout_marginBottom="20dip"
-            android:onClick="goPizzas"/>
+            android:layout_marginBottom="20dip"/>
 
         <Button
             android:id="@+id/client_page_orders_b"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/client_page_orders_b"
-            android:layout_marginTop="20dip"
-            android:onClick="goOrders"/>
+            android:layout_marginTop="20dip"/>
 
     </LinearLayout>
 

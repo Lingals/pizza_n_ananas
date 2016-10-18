@@ -21,22 +21,28 @@ public class ClientPage extends AppCompatActivity {
         context = this;
 
         initializeFields();
+
+        client_page_pizzas_b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Intent i = new Intent(getApplicationContext(), .class);
+                startActivity(i);
+                finish();*/
+            }
+        });
+
+        client_page_orders_b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Intent i = new Intent(getApplicationContext(), .class);
+                startActivity(i);
+                finish();*/
+            }
+        });
     }
 
     public void initializeFields() {
         client_page_pizzas_b = (Button) findViewById(R.id.client_page_pizzas_b);
         client_page_orders_b = (Button) findViewById(R.id.client_page_orders_b);
-    }
-
-    public void goPizzas(View view) {
-        /*Intent i = new Intent(getApplicationContext(), .class);
-        startActivity(i);
-        finish();*/
-    }
-
-    public void goOrders(View view) {
-        /*Intent i = new Intent(getApplicationContext(), ClientPage.class);
-        startActivity(i);
-        finish();*/
     }
 }

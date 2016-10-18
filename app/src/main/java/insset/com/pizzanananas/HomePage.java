@@ -22,22 +22,28 @@ public class HomePage extends AppCompatActivity {
         context = this;
 
         initializeFields();
+
+        home_page_client_b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), ClientPage.class);
+                startActivity(i);
+                finish();
+            }
+        });
+
+        home_page_admin_b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Intent i = new Intent(getApplicationContext(), .class);
+        startActivity(i);
+        finish();*/
+            }
+        });
     }
 
     public void initializeFields() {
         home_page_client_b = (Button) findViewById(R.id.home_page_client_b);
         home_page_admin_b = (Button) findViewById(R.id.home_page_admin_b);
-    }
-
-    public void goClient(View view) {
-        Intent i = new Intent(getApplicationContext(), ClientPage.class);
-        startActivity(i);
-        finish();
-    }
-
-    public void goAdmin(View view) {
-        /*Intent i = new Intent(getApplicationContext(), .class);
-        startActivity(i);
-        finish();*/
     }
 }
