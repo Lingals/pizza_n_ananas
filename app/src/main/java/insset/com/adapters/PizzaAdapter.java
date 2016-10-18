@@ -1,7 +1,9 @@
 package insset.com.adapters;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 import insset.com.models.Pizza;
+import insset.com.pizzanananas.ClientOrderList;
 import insset.com.pizzanananas.R;
 import insset.com.utils.Constant;
 
@@ -122,6 +125,11 @@ public class PizzaAdapter extends BaseAdapter {
                 try {
 
                     Toast.makeText(context, "Votre numéro de commande est le " + response.getString("id"), Toast.LENGTH_LONG).show();
+
+                    Intent i = new Intent(context, ClientOrderList.class);
+                    i.putExtra("idPizza", response.getString("id"));
+                    context.startActivity(i);
+                    ((Activity) context).finish();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
