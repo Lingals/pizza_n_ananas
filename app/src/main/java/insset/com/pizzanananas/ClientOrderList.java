@@ -42,6 +42,8 @@ public class ClientOrderList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_order_list);
 
+        setTitle("Liste des commandes");
+
         context = this;
 
         initializeFields();
@@ -82,7 +84,7 @@ public class ClientOrderList extends AppCompatActivity {
 
         client.addHeader("Authorization", Constant.Authorization);
 
-        client.setMaxRetriesAndTimeout(1, 3000);
+        client.setTimeout(3000);
 
         orderList.clear();
 
@@ -136,13 +138,37 @@ public class ClientOrderList extends AppCompatActivity {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
-                orderAdapter = new OrderAdapter(context, orderList, false);
-                list_client_order.setAdapter(orderAdapter);
-                orderAdapter.notifyDataSetChanged();
+                try {
+                    if(response.has("message")){
+                        orderAdapter = new OrderAdapter(context, orderList, false);
+                        list_client_order.setAdapter(orderAdapter);
+                        orderAdapter.notifyDataSetChanged();
 
-                if(orderList.isEmpty()){
-                    Toast.makeText(context, "Aucun résultat", Toast.LENGTH_LONG).show();
+                        if(orderList.isEmpty()){
+                            Toast.makeText(context, "Aucun résultat", Toast.LENGTH_LONG).show();
+                        }
+                    }else{
+                        orderAdapter = new OrderAdapter(context, orderList, false);
+                        list_client_order.setAdapter(orderAdapter);
+                        orderAdapter.notifyDataSetChanged();
+
+                        if(orderList.isEmpty()){
+                            Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                    }
+                }catch(Exception e){
+                    orderAdapter = new OrderAdapter(context, orderList, false);
+                    list_client_order.setAdapter(orderAdapter);
+                    orderAdapter.notifyDataSetChanged();
+
+                    if(orderList.isEmpty()){
+                        Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                    }
+                    finish();
                 }
+
+
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
@@ -154,7 +180,7 @@ public class ClientOrderList extends AppCompatActivity {
                 orderAdapter.notifyDataSetChanged();
 
                 if(orderList.isEmpty()){
-                    Toast.makeText(context, "Aucun résultat", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
                 }
 
             }

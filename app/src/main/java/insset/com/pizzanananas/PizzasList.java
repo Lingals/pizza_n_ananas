@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -35,6 +36,8 @@ public class PizzasList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pizzas_list);
 
+        setTitle("Liste des pizzas");
+
         context = this;
 
         initializeFields();
@@ -53,7 +56,7 @@ public class PizzasList extends AppCompatActivity {
         client.addHeader("Authorization", Constant.Authorization);
 
 
-        client.setMaxRetriesAndTimeout(2, 3000);
+        client.setTimeout(3000);
 
         JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler() {
 
@@ -82,16 +85,28 @@ public class PizzasList extends AppCompatActivity {
 
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
+
+                if(listPizzas.isEmpty()){
+                    Toast.makeText(context, "Aucune pizza disponible", Toast.LENGTH_LONG).show();
+                }
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
+
+                Toast.makeText(context, "Une erreur serveur est survenue", Toast.LENGTH_LONG).show();
+
+                finish();
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
+
+                Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+
+                finish();
 
             }
         };

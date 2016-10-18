@@ -19,6 +19,8 @@ public class ClientPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_page);
 
+        setTitle("Page client");
+
         context = this;
 
         initializeFields();
