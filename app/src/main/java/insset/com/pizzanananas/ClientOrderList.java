@@ -132,6 +132,12 @@ public class ClientOrderList extends AppCompatActivity {
                     Toast.makeText(context, "Aucun résultat", Toast.LENGTH_LONG).show();
                 }
 
+                try{
+                    Log.e("Client Orders", orderJson.toString()+"");
+                }catch(Exception e){
+
+                }
+
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
@@ -169,6 +175,13 @@ public class ClientOrderList extends AppCompatActivity {
                 }
 
 
+                try{
+                    Log.e("Client Orders Failure", response.toString()+"");
+                }catch(Exception e){
+
+                }
+
+
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
@@ -181,6 +194,12 @@ public class ClientOrderList extends AppCompatActivity {
 
                 if(orderList.isEmpty()){
                     Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                }
+
+                try{
+                    Log.e("Client Order Failure St", result+"");
+                }catch(Exception e){
+
                 }
 
             }

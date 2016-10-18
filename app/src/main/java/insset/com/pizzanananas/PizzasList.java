@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -89,6 +90,12 @@ public class PizzasList extends AppCompatActivity {
                 if(listPizzas.isEmpty()){
                     Toast.makeText(context, "Aucune pizza disponible", Toast.LENGTH_LONG).show();
                 }
+
+                try{
+                    Log.e("Pizza list", response.toString() + "");
+                }catch(Exception e){
+
+                }
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
@@ -98,6 +105,12 @@ public class PizzasList extends AppCompatActivity {
                 Toast.makeText(context, "Une erreur serveur est survenue", Toast.LENGTH_LONG).show();
 
                 finish();
+
+                try{
+                    Log.e("Pizza list Failure", response.toString()+"");
+                }catch(Exception e){
+
+                }
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
@@ -107,6 +120,12 @@ public class PizzasList extends AppCompatActivity {
                 Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
 
                 finish();
+
+                try{
+                    Log.e("Pizza list Failure St", result+"");
+                }catch(Exception e){
+
+                }
 
             }
         };

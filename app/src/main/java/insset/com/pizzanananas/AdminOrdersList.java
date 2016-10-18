@@ -104,6 +104,12 @@ public class AdminOrdersList extends AppCompatActivity {
                     Toast.makeText(context, "Aucune commande en cours", Toast.LENGTH_LONG).show();
                 }
 
+                try{
+                    Log.e("Admin Orders", response.toString()+"");
+                }catch(Exception e){
+
+                }
+
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
@@ -113,6 +119,12 @@ public class AdminOrdersList extends AppCompatActivity {
                 Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
 
                 finish();
+
+                try{
+                    Log.e("Admin Orders Failure", response.toString()+"");
+                }catch(Exception e){
+
+                }
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
@@ -123,6 +135,12 @@ public class AdminOrdersList extends AppCompatActivity {
 
                 finish();
 
+
+                try{
+                    Log.e("Admin Orders Failure St", result+"");
+                }catch(Exception e){
+
+                }
             }
         };
         progressDialog = new ProgressDialog(context);
