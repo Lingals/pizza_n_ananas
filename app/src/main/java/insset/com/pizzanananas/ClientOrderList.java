@@ -48,7 +48,6 @@ public class ClientOrderList extends AppCompatActivity {
             public void onClick(View view) {
                 if (!editText_client_order_list.getText().toString().isEmpty()){
                     getOrders(editText_client_order_list.getText().toString());
-
                 }
             }
         });
@@ -67,7 +66,7 @@ public class ClientOrderList extends AppCompatActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         //RequestParams params = new RequestParams();
 
-        Log.e("ID ORDER", id+"");
+        Log.e("ID ORDER", id + "");
 
         client.addHeader("Authorization", Constant.Authorization);
 
@@ -77,42 +76,37 @@ public class ClientOrderList extends AppCompatActivity {
         JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler() {
 
 
-            public void onSuccess(int statusCode, Header[] headers, org.json.JSONArray response) {
+            public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject orderJson) {
                 System.out.println("Success");
-                Log.e("Je vois", "La reponse" + response.toString());
+                Log.e("Je vois", "La reponse" + orderJson.toString());
 
-                JSONObject orderJson;
-                for(int i = 0; i < response.length(); i++){
-                    Order newOrder = new Order();
-                    try {
-                        orderJson = response.getJSONObject(i);
-                        if(orderJson.has("id")){
-                            newOrder.setId(orderJson.getInt("id"));
-                        }
-                        if(orderJson.has("status")){
-                            newOrder.setStatus(orderJson.getString("status"));
-                        }
-                        if(orderJson.has("pizza")){
-                            Pizza newPizza = new Pizza();
-                            JSONObject pizzaJson = orderJson.getJSONObject("pizza");
-                            if(pizzaJson.has("id")){
-                                newPizza.setId(pizzaJson.getInt("id"));
-                            }
-                            if(pizzaJson.has("price")){
-                                newPizza.setPrice(pizzaJson.getInt("price"));
-                            }
-                            if(pizzaJson.has("name")){
-                                newPizza.setName(pizzaJson.getString("name"));
-                            }
-                            newOrder.setPizza(newPizza);
-                        }
-
-                        orderList.add(newOrder);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                Order newOrder = new Order();
+                try {
+                    if(orderJson.has("id")){
+                        newOrder.setId(orderJson.getInt("id"));
                     }
-                }
+                    if(orderJson.has("status")){
+                        newOrder.setStatus(orderJson.getString("status"));
+                    }
+                    if(orderJson.has("pizza")){
+                        Pizza newPizza = new Pizza();
+                        JSONObject pizzaJson = orderJson.getJSONObject("pizza");
+                        if(pizzaJson.has("id")){
+                            newPizza.setId(pizzaJson.getInt("id"));
+                        }
+                        if(pizzaJson.has("price")){
+                            newPizza.setPrice(pizzaJson.getInt("price"));
+                        }
+                        if(pizzaJson.has("name")){
+                            newPizza.setName(pizzaJson.getString("name"));
+                        }
+                        newOrder.setPizza(newPizza);
+                    }
 
+                    orderList.add(newOrder);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 list_client_order.setAdapter(new OrderAdapter(context, orderList));
 
 
@@ -130,7 +124,7 @@ public class ClientOrderList extends AppCompatActivity {
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
                 System.out.println("Failure String");
-                Log.e("Status Code", statusCode+"");
+                Log.e("Status Code", statusCode + "");
                 Log.e("Je vois", "La reponse" + result.toString());
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
@@ -141,7 +135,7 @@ public class ClientOrderList extends AppCompatActivity {
         progressDialog.setMessage("Récupération des commandes");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        client.get(Constant.host + Constant.getOrders+"/{"+id+"}", responseHandler);
+        client.get(Constant.host + Constant.getOrders+"/"+id+"", responseHandler);
     }
 
 }
