@@ -60,6 +60,7 @@ public class ClientOrderList extends AppCompatActivity {
             public void onClick(View view) {
                 if (!editText_client_order_list.getText().toString().isEmpty()) {
                     getOrders(editText_client_order_list.getText().toString());
+                    orderList = new ArrayList<>();
                 }
             }
         });
@@ -147,7 +148,7 @@ public class ClientOrderList extends AppCompatActivity {
         progressDialog.setMessage("Récupération des commandes");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        client.get(Constant.host + Constant.getOrders+"/"+id+"", responseHandler);
+        client.get(Constant.host + Constant.getOrders + "/" + id + "", responseHandler);
     }
 
 }
