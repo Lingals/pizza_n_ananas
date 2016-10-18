@@ -2,8 +2,9 @@ package insset.com.pizzanananas;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,10 +44,21 @@ public class ClientOrderList extends AppCompatActivity {
 
         initializeFields();
 
+        Intent intent = getIntent();
+        String idPizza = null;
+
+        idPizza = intent.getStringExtra("idPizza");
+
+        if (idPizza != null && !idPizza.equals("")) {
+            editText_client_order_list.setText(idPizza);
+
+            getOrders(idPizza);
+        }
+
         button_client_order_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!editText_client_order_list.getText().toString().isEmpty()){
+                if (!editText_client_order_list.getText().toString().isEmpty()) {
                     getOrders(editText_client_order_list.getText().toString());
                 }
             }
