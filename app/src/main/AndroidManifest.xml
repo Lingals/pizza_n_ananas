@@ -19,9 +19,9 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".ClientPage" />
-        <activity android:name=".PizzasList"></activity>
-        <activity android:name=".AdminOrdersList" >
-        </activity>
+        <activity android:name=".PizzasList" />
+        <activity android:name=".AdminOrdersList"></activity>
+        <activity android:name=".ClientOrderList"></activity>
     </application>
 
 </manifest>

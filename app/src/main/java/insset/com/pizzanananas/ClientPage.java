@@ -35,9 +35,9 @@ public class ClientPage extends AppCompatActivity {
         client_page_orders_b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent i = new Intent(getApplicationContext(), .class);
+                Intent i = new Intent(getApplicationContext(), ClientOrderList.class);
                 startActivity(i);
-                finish();*/
+                finish();
             }
         });
     }
