@@ -10,7 +10,16 @@ import android.widget.ListView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import cz.msebera.android.httpclient.Header;
+import insset.com.adapters.OrderAdapter;
+import insset.com.models.Order;
+import insset.com.models.Pizza;
 import insset.com.utils.Constant;
 
 public class AdminOrdersList extends AppCompatActivity {
@@ -18,6 +27,7 @@ public class AdminOrdersList extends AppCompatActivity {
     ListView list_of_orders;
     ProgressDialog progressDialog;
     Context context;
+    List<Order> orderList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +60,42 @@ public class AdminOrdersList extends AppCompatActivity {
             public void onSuccess(int statusCode,Header[] headers,org.json.JSONArray response) {
                 System.out.println("Success");
                 Log.e("Je vois", "La reponse" + response.toString());
+
+                JSONObject orderJson;
+                for(int i = 0; i < response.length(); i++){
+                    Order newOrder = new Order();
+                    try {
+                        orderJson = response.getJSONObject(i);
+                        if(orderJson.has("id")){
+                            newOrder.setId(orderJson.getInt("id"));
+                        }
+                        if(orderJson.has("status")){
+                            newOrder.setStatus(orderJson.getString("status"));
+                        }
+                        if(orderJson.has("pizza")){
+                            Pizza newPizza = new Pizza();
+                            JSONObject pizzaJson = orderJson.getJSONObject("pizza");
+                            if(pizzaJson.has("id")){
+                                newPizza.setId(pizzaJson.getInt("id"));
+                            }
+                            if(pizzaJson.has("price")){
+                                newPizza.setPrice(pizzaJson.getInt("price"));
+                            }
+                            if(pizzaJson.has("name")){
+                                newPizza.setName(pizzaJson.getString("name"));
+                            }
+                            newOrder.setPizza(newPizza);
+                        }
+
+                        orderList.add(newOrder);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                list_of_orders.setAdapter(new OrderAdapter(context, orderList));
+
+
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
@@ -72,9 +118,9 @@ public class AdminOrdersList extends AppCompatActivity {
             }
         };
         progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage("Récupération des pizzas");
+        progressDialog.setMessage("Récupération des commandes");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        client.get(Constant.host + Constant.getPizzas, responseHandler);
+        client.get(Constant.host + Constant.getOrders, responseHandler);
     }
 }
