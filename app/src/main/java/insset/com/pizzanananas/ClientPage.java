@@ -1,6 +1,7 @@
 package insset.com.pizzanananas;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -25,9 +26,9 @@ public class ClientPage extends AppCompatActivity {
         client_page_pizzas_b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent i = new Intent(getApplicationContext(), .class);
+                Intent i = new Intent(getApplicationContext(), PizzasList.class);
                 startActivity(i);
-                finish();*/
+                finish();
             }
         });
 
