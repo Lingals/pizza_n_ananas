@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+import insset.com.adapters.PizzaAdapter;
 import insset.com.models.Pizza;
 import insset.com.utils.Constant;
 
@@ -27,7 +28,7 @@ public class PizzasList extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
-    //private PizzaAdapter pizzaAdapter;
+    private PizzaAdapter pizzaAdapter;
     private List<Pizza> listPizzas = new ArrayList<>();
 
     @Override
@@ -61,8 +62,6 @@ public class PizzasList extends AppCompatActivity {
             public void onSuccess(int statusCode,Header[] headers,org.json.JSONArray response) {
                 System.out.println("Success");
                 Log.e("Je vois", "La reponse" + response.toString());
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
 
                 try {
 
@@ -75,12 +74,17 @@ public class PizzasList extends AppCompatActivity {
 
                         listPizzas.add(pizza);
                     }
+
+                    pizzaAdapter = new PizzaAdapter(context, listPizzas);
+
+                    pizzas_list_lv.setAdapter(pizzaAdapter);
+
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                Log.d("SIZE" , listPizzas.size() + "");
-
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
