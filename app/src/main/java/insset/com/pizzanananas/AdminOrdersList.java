@@ -2,9 +2,8 @@ package insset.com.pizzanananas;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -58,8 +57,6 @@ public class AdminOrdersList extends AppCompatActivity {
 
 
             public void onSuccess(int statusCode,Header[] headers,org.json.JSONArray response) {
-                System.out.println("Success");
-                Log.e("Je vois", "La reponse" + response.toString());
 
                 JSONObject orderJson;
                 for(int i = 0; i < response.length(); i++){
@@ -102,16 +99,11 @@ public class AdminOrdersList extends AppCompatActivity {
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
-                System.out.println("Failure Json");
-                Log.e("Je vois", "La reponse" + response.toString());
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
-                System.out.println("Failure String");
-                Log.e("Status Code", statusCode+"");
-                Log.e("Je vois", "La reponse" + result.toString());
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 

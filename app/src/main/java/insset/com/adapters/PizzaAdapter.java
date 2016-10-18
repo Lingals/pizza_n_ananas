@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,11 +118,8 @@ public class PizzaAdapter extends BaseAdapter {
         JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler() {
 
             public void onSuccess(int statusCode,Header[] headers,org.json.JSONObject response) {
-                System.out.println("Success");
-                Log.e("Je vois", "La reponse" + response.toString());
 
                 try {
-
                     Toast.makeText(context, "Votre numéro de commande est le " + response.getString("id"), Toast.LENGTH_LONG).show();
 
                     Intent i = new Intent(context, ClientOrderList.class);
@@ -141,16 +137,11 @@ public class PizzaAdapter extends BaseAdapter {
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
-                System.out.println("Failure Json");
-                Log.e("Je vois", "La reponse" + response.toString());
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
-                System.out.println("Failure String");
-                Log.e("Status Code", statusCode+"");
-                Log.e("Je vois", "La reponse" + result.toString());
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 

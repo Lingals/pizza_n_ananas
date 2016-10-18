@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -79,8 +78,6 @@ public class ClientOrderList extends AppCompatActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         //RequestParams params = new RequestParams();
 
-        Log.e("ID ORDER", id + "");
-
         client.addHeader("Authorization", Constant.Authorization);
 
 
@@ -90,8 +87,6 @@ public class ClientOrderList extends AppCompatActivity {
 
 
             public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject orderJson) {
-                System.out.println("Success");
-                Log.e("Je vois", "La reponse" + orderJson.toString());
 
                 Order newOrder = new Order();
                 try {
@@ -129,16 +124,11 @@ public class ClientOrderList extends AppCompatActivity {
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
-                System.out.println("Failure Json");
-                Log.e("Je vois", "La reponse" + response.toString());
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
-                System.out.println("Failure String");
-                Log.e("Status Code", statusCode + "");
-                Log.e("Je vois", "La reponse" + result.toString());
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
