@@ -35,9 +35,9 @@ public class HomePage extends AppCompatActivity {
         home_page_admin_b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent i = new Intent(getApplicationContext(), .class);
-        startActivity(i);
-        finish();*/
+                Intent i = new Intent(getApplicationContext(), AdminOrdersList.class);
+                startActivity(i);
+                finish();
             }
         });
     }
