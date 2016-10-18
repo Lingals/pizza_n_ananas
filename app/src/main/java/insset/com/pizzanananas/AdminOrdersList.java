@@ -13,7 +13,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import cz.msebera.android.httpclient.Header;
 import insset.com.utils.Constant;
 
-public class OrdersList extends AppCompatActivity {
+public class AdminOrdersList extends AppCompatActivity {
 
     ListView list_of_orders;
     ProgressDialog progressDialog;

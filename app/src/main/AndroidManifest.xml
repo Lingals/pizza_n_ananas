@@ -18,9 +18,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".OrdersList"></activity>
         <activity android:name=".ClientPage" />
         <activity android:name=".PizzasList"></activity>
+        <activity android:name=".AdminOrdersList" >
+        </activity>
     </application>
 
 </manifest>
