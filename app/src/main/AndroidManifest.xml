@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".OrdersList" >
+        <activity android:name=".AdminOrdersList" >
         </activity>
         <activity android:name=".ClientPage"></activity>
     </application>
