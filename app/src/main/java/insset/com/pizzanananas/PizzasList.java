@@ -79,12 +79,12 @@ public class PizzasList extends AppCompatActivity {
 
                     pizzas_list_lv.setAdapter(pizzaAdapter);
 
-                    if (progressDialog.isShowing())
-                        progressDialog.dismiss();
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
