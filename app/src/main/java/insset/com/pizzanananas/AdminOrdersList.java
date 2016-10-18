@@ -93,7 +93,7 @@ public class AdminOrdersList extends AppCompatActivity {
                     }
                 }
 
-                list_of_orders.setAdapter(new OrderAdapter(context, orderList));
+                list_of_orders.setAdapter(new OrderAdapter(context, orderList, true));
 
 
                 if (progressDialog.isShowing())

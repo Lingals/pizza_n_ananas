@@ -21,11 +21,13 @@ public class OrderAdapter extends BaseAdapter {
     protected Context context;
     private LayoutInflater inflater;
     private List<Order> items = new ArrayList<Order>();
+    boolean admin = false;
 
-    public OrderAdapter(Context context, List<Order> liste) {
+    public OrderAdapter(Context context, List<Order> liste, boolean admin) {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = context;
         this.items = liste;
+        this.admin = admin;
     }
 
     @Override
@@ -63,7 +65,11 @@ public class OrderAdapter extends BaseAdapter {
             orderView = (OrderViewHolder) convertView.getTag();
         }
 
-        orderView.order_item_pizza_name.setText(order.getPizza().getName()+"");
+        if(admin){
+            orderView.order_item_pizza_name.setText(order.getId()+". "+order.getPizza().getName()+"");
+        }else{
+            orderView.order_item_pizza_name.setText(order.getPizza().getName()+"");
+        }
         orderView.order_item_pizza_price.setText(order.getPizza().getPrice()+"");
         orderView.order_item_pizza_status.setText(order.getStatus()+"");
 

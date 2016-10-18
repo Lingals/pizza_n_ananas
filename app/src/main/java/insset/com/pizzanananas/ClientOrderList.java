@@ -107,7 +107,7 @@ public class ClientOrderList extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                list_client_order.setAdapter(new OrderAdapter(context, orderList));
+                list_client_order.setAdapter(new OrderAdapter(context, orderList, false));
 
 
                 if (progressDialog.isShowing())
