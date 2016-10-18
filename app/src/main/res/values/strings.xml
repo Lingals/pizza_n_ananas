@@ -3,4 +3,7 @@
 
     <string name="home_page_client_b">Client</string>
     <string name="home_page_admin_b">Admin</string>
+
+    <string name="client_page_pizzas_b">Liste des pizzas</string>
+    <string name="client_page_orders_b">Liste des commandes</string>
 </resources>
