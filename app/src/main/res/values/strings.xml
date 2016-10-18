@@ -6,4 +6,7 @@
 
     <string name="client_page_pizzas_b">Liste des pizzas</string>
     <string name="client_page_orders_b">Liste des commandes</string>
+
+    <string name="search">Rechercher</string>
+    <string name="order_id_edit">Id de la commande</string>
 </resources>

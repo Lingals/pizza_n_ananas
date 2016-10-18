@@ -7,7 +7,7 @@
     tools:context="insset.com.pizzanananas.ClientOrderList">
 
     <Button
-        android:text="Recherche"
+        android:text="@string/search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button_client_order_list"
@@ -27,7 +27,7 @@
         android:layout_toLeftOf="@+id/button_client_order_list"
         android:layout_toStartOf="@+id/button_client_order_list"
         android:layout_alignParentTop="true"
-        android:hint="tapez votre numero de commande" />
+        android:hint="@string/order_id_edit" />
 
     <ListView
         android:layout_width="match_parent"

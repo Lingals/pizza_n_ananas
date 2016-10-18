@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -33,6 +35,7 @@ public class ClientOrderList extends AppCompatActivity {
     Button button_client_order_list;
     ProgressDialog progressDialog;
     List<Order> orderList = new ArrayList<>();
+    OrderAdapter orderAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,6 @@ public class ClientOrderList extends AppCompatActivity {
             public void onClick(View view) {
                 if (!editText_client_order_list.getText().toString().isEmpty()) {
                     getOrders(editText_client_order_list.getText().toString());
-                    orderList = new ArrayList<>();
                 }
             }
         });
@@ -80,8 +82,9 @@ public class ClientOrderList extends AppCompatActivity {
 
         client.addHeader("Authorization", Constant.Authorization);
 
+        client.setMaxRetriesAndTimeout(1, 3000);
 
-        client.setMaxRetriesAndTimeout(2, 3000);
+        orderList.clear();
 
         JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler() {
 
@@ -115,22 +118,44 @@ public class ClientOrderList extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                list_client_order.setAdapter(new OrderAdapter(context, orderList, false));
+                orderAdapter = new OrderAdapter(context, orderList, false);
+                list_client_order.setAdapter(orderAdapter);
+                orderAdapter.notifyDataSetChanged();
 
 
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
+
+                if(orderList.isEmpty()){
+                    Toast.makeText(context, "Aucun résultat", Toast.LENGTH_LONG).show();
+                }
 
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
+
+                orderAdapter = new OrderAdapter(context, orderList, false);
+                list_client_order.setAdapter(orderAdapter);
+                orderAdapter.notifyDataSetChanged();
+
+                if(orderList.isEmpty()){
+                    Toast.makeText(context, "Aucun résultat", Toast.LENGTH_LONG).show();
+                }
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
+
+                orderAdapter = new OrderAdapter(context, orderList, false);
+                list_client_order.setAdapter(orderAdapter);
+                orderAdapter.notifyDataSetChanged();
+
+                if(orderList.isEmpty()){
+                    Toast.makeText(context, "Aucun résultat", Toast.LENGTH_LONG).show();
+                }
 
             }
         };
