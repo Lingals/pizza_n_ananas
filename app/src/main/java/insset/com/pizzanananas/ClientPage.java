@@ -28,7 +28,6 @@ public class ClientPage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), PizzasList.class);
                 startActivity(i);
-                finish();
             }
         });
 
@@ -37,7 +36,6 @@ public class ClientPage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), ClientOrderList.class);
                 startActivity(i);
-                finish();
             }
         });
     }
