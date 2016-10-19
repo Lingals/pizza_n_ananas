@@ -27,7 +27,7 @@ public class ErrorPage extends AppCompatActivity {
             responseTw = responseTw.replace("[!info!]","");
             viewError.setText(responseTw);
         }else{
-            viewError.setText("Nous rencontrons actuellement des problèmes, merci pour votre compréhension ");
+            viewError.setText("Nous rencontrons actuellement des problèmes, nous nous excusons pour la gène occasionné et vous remercions pour votre compréhension ");
         }
 
 

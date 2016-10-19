@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -159,10 +160,15 @@ public class PizzasList extends AppCompatActivity {
                 responseTw = twitter.getUserTimeline();
                 Log.d("TWITTER", responseTw.toString());
                 if (responseTw.size()>0){
-                    DateFormat date = new SimpleDateFormat("dd/MM/yyyy à HH:mm:ss");
+                    DateFormat df = new SimpleDateFormat("dd/MM/yyyy à HH:mm:ss");
                     Date tweetDate = responseTw.get(0).getCreatedAt();
-                    result = date.format(tweetDate)+" "+responseTw.get(0).getText();
 
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(tweetDate);
+                    tweetDate = cal.getTime();
+
+                    result = df.format(tweetDate) + " : ";
+                    result += responseTw.get(0).getText();
                 }
 
             } catch (TwitterException e) {
