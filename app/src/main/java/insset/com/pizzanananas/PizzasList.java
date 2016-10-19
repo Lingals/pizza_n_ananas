@@ -2,6 +2,7 @@ package insset.com.pizzanananas;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,6 +23,13 @@ import cz.msebera.android.httpclient.Header;
 import insset.com.adapters.PizzaAdapter;
 import insset.com.models.Pizza;
 import insset.com.utils.Constant;
+import twitter4j.ResponseList;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.AccessToken;
+import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.json.DataObjectFactory;
 
 public class PizzasList extends AppCompatActivity {
 
@@ -44,6 +53,9 @@ public class PizzasList extends AppCompatActivity {
         initializeFields();
 
         getPizzas();
+
+        DownloadTwitterTask dtt = new DownloadTwitterTask();
+        dtt.execute();
     }
 
     public void initializeFields() {
@@ -91,11 +103,11 @@ public class PizzasList extends AppCompatActivity {
                     Toast.makeText(context, "Aucune pizza disponible", Toast.LENGTH_LONG).show();
                 }
 
-                try{
+                /*try{
                     Log.e("Pizza list", response.toString() + "");
                 }catch(Exception e){
 
-                }
+                }*/
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
@@ -134,5 +146,44 @@ public class PizzasList extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
         client.get(Constant.host + Constant.getPizzas, responseHandler);
+    }
+
+    // Uses an AsyncTask to download a Twitter user's timeline
+    private class DownloadTwitterTask extends AsyncTask<String, Void, String> {
+        final static String CONSUMER_KEY = "MY CONSUMER KEY";
+        final static String CONSUMER_SECRET = "MY CONSUMER SECRET";
+        final static String TwitterTokenURL = "https://api.twitter.com/oauth2/token";
+        final static String TwitterStreamURL = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=";
+
+        @Override
+        protected String doInBackground(String... screenNames) {
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.setOAuthConsumerKey("tafGT8qOnr3L712G0CrnaBV1V");
+            builder.setOAuthConsumerSecret("2SpKtupj5QmayWa1kpwn0Ufi9R9252eitEflrKEfx4eFU5nR0j");
+            AccessToken accessToken = new AccessToken("788640120496939008-lRyhIURSbpk1RyltnNzBY94vmYUbgSJ",
+                    "TLBvSIEqqLV96Dh4CqMPBevi18o385Fcowf9K8ts40PJz");
+            Twitter twitter = new TwitterFactory(builder.build()).getInstance(accessToken);
+            try {
+                ResponseList<twitter4j.Status> responseTw = twitter.getUserTimeline();
+                Log.d("TWITTER", responseTw.toString());
+                String statusJson = DataObjectFactory.getRawJSON(responseTw);
+                //JSON String to JSONObject
+                try {
+                    JSONArray JSON_complete = new JSONArray(statusJson);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } catch (TwitterException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return "youpi";
+        }
+
+        // onPostExecute convert the JSON results into a Twitter object (which is an Array list of tweets
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("Twitter", "It Works bitch");
+        }
     }
 }
