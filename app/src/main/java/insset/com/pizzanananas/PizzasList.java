@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,7 +28,6 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
-import twitter4j.json.DataObjectFactory;
 
 public class PizzasList extends AppCompatActivity {
 
@@ -53,9 +51,6 @@ public class PizzasList extends AppCompatActivity {
         initializeFields();
 
         getPizzas();
-
-        DownloadTwitterTask dtt = new DownloadTwitterTask();
-        dtt.execute();
     }
 
     public void initializeFields() {
@@ -116,6 +111,9 @@ public class PizzasList extends AppCompatActivity {
 
                 Toast.makeText(context, "Une erreur serveur est survenue", Toast.LENGTH_LONG).show();
 
+                DownloadTwitterTask dtt = new DownloadTwitterTask();
+                dtt.execute();
+
                 finish();
 
                 try{
@@ -165,7 +163,11 @@ public class PizzasList extends AppCompatActivity {
             Twitter twitter = new TwitterFactory(builder.build()).getInstance(accessToken);
             try {
                 ResponseList<twitter4j.Status> responseTw = twitter.getUserTimeline();
-                Log.d("TWITTER", responseTw.toString());
+
+                if (responseTw.size() > 0) {
+                    String test = responseTw.get(0).getText();
+                    Log.d("TWITTER", test);
+                }
 
             } catch (TwitterException e) {
                 // TODO Auto-generated catch block
