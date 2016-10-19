@@ -20,8 +20,9 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".ClientPage" />
         <activity android:name=".PizzasList" />
-        <activity android:name=".AdminOrdersList"></activity>
-        <activity android:name=".ClientOrderList"></activity>
+        <activity android:name=".AdminOrdersList" />
+        <activity android:name=".ClientOrderList" />
+        <activity android:name=".ErrorPage"></activity>
     </application>
 
 </manifest>
