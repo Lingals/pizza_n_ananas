@@ -2,6 +2,7 @@ package insset.com.pizzanananas;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +17,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
@@ -45,17 +49,12 @@ public class PizzasList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pizzas_list);
-
         setTitle("Liste des pizzas");
-
         context = this;
-
         initializeFields();
-
         getPizzas();
 
-        DownloadTwitterTask dtt = new DownloadTwitterTask();
-        dtt.execute();
+
     }
 
     public void initializeFields() {
@@ -116,13 +115,8 @@ public class PizzasList extends AppCompatActivity {
 
                 Toast.makeText(context, "Une erreur serveur est survenue", Toast.LENGTH_LONG).show();
 
-                finish();
-
-                try{
-                    Log.e("Pizza list Failure", response.toString()+"");
-                }catch(Exception e){
-
-                }
+                DownloadTwitterTask dtt = new DownloadTwitterTask();
+                dtt.execute();
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
@@ -131,13 +125,9 @@ public class PizzasList extends AppCompatActivity {
 
                 Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
 
-                finish();
 
-                try{
-                    Log.e("Pizza list Failure St", result+"");
-                }catch(Exception e){
-
-                }
+                DownloadTwitterTask dtt = new DownloadTwitterTask();
+                dtt.execute();
 
             }
         };
@@ -162,22 +152,37 @@ public class PizzasList extends AppCompatActivity {
             builder.setOAuthConsumerSecret("2SpKtupj5QmayWa1kpwn0Ufi9R9252eitEflrKEfx4eFU5nR0j");
             AccessToken accessToken = new AccessToken("788640120496939008-lRyhIURSbpk1RyltnNzBY94vmYUbgSJ",
                     "TLBvSIEqqLV96Dh4CqMPBevi18o385Fcowf9K8ts40PJz");
+            String result= "";
             Twitter twitter = new TwitterFactory(builder.build()).getInstance(accessToken);
+            ResponseList<twitter4j.Status> responseTw = null;
             try {
-                ResponseList<twitter4j.Status> responseTw = twitter.getUserTimeline();
+                responseTw = twitter.getUserTimeline();
                 Log.d("TWITTER", responseTw.toString());
+                if (responseTw.size()>0){
+                    DateFormat date = new SimpleDateFormat("dd/MM/yyyy à HH:mm:ss");
+                    Date tweetDate = responseTw.get(0).getCreatedAt();
+                    result = date.format(tweetDate)+" "+responseTw.get(0).getText();
+
+                }
 
             } catch (TwitterException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+
             }
-            return "youpi";
+            return result;
         }
 
         // onPostExecute convert the JSON results into a Twitter object (which is an Array list of tweets
         @Override
         protected void onPostExecute(String result) {
             Log.d("Twitter", "It Works bitch");
+
+            Intent intent = new Intent(getApplicationContext(), ErrorPage.class);
+            Log.e("tweet",result);
+            intent.putExtra("tweet", result);
+            startActivity(intent);
+            finish();
         }
     }
 }
