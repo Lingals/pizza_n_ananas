@@ -166,13 +166,7 @@ public class PizzasList extends AppCompatActivity {
             try {
                 ResponseList<twitter4j.Status> responseTw = twitter.getUserTimeline();
                 Log.d("TWITTER", responseTw.toString());
-                String statusJson = DataObjectFactory.getRawJSON(responseTw);
-                //JSON String to JSONObject
-                try {
-                    JSONArray JSON_complete = new JSONArray(statusJson);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+
             } catch (TwitterException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
