@@ -2,18 +2,22 @@ package insset.com.pizzanananas;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +34,8 @@ public class AdminOrdersList extends AppCompatActivity {
     Context context;
     List<Order> orderList = new ArrayList<>();
 
+    SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +44,8 @@ public class AdminOrdersList extends AppCompatActivity {
         setTitle("Page admin");
 
         context = this;
+
+        sharedPreferences = getSharedPreferences("ERROR_LOG", MODE_PRIVATE);
 
         initializeFields();
 
@@ -61,6 +69,8 @@ public class AdminOrdersList extends AppCompatActivity {
 
 
             public void onSuccess(int statusCode,Header[] headers,org.json.JSONArray response) {
+
+                sharedPreferences.edit().remove("listOfOrdersAdmin");
 
                 JSONObject orderJson;
                 for(int i = 0; i < response.length(); i++){
@@ -87,6 +97,19 @@ public class AdminOrdersList extends AppCompatActivity {
                             }
                             newOrder.setPizza(newPizza);
                         }
+
+                        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(orderList);
+                        prefsEditor.putString("listOfOrdersAdmin", json);
+                        prefsEditor.commit();
+
+                        Type type = new TypeToken<List<Order>>(){}.getType();
+                        Gson gson2 = new Gson();
+                        String jsonOrder = sharedPreferences.getString("listOfOrdersAdmin", "");
+                        List<Order> ordersList = gson2.fromJson(jsonOrder, type);
+
+                        Log.i("LIST", ordersList.toString()+"");
 
                         orderList.add(newOrder);
                     } catch (JSONException e) {
@@ -116,9 +139,33 @@ public class AdminOrdersList extends AppCompatActivity {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
-                Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
 
-                finish();
+
+                // si le shared preference est vide on met le cache sinon on ne touche le cache que si le timestamp est > 1 minute
+
+                if ( (sharedPreferences.getString("ErrType", "").equals("")) || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 60000)) {
+
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("ErrType", "Timeout");
+                    editor.putString("Activity", "AdminOrder");
+                    editor.putLong("timestamp", System.currentTimeMillis());
+                    editor.commit();
+                    Log.d("EDITOR", System.currentTimeMillis() + "");
+                } else {
+                    Log.d("NOT EDITOR", sharedPreferences.getLong("timestamp", 0) + "");
+                }
+
+                Type type = new TypeToken<List<Order>>(){}.getType();
+                Gson gson = new Gson();
+                String jsonOrder = sharedPreferences.getString("listOfOrdersAdmin", "");
+                List<Order> ordersList = gson.fromJson(jsonOrder, type);
+
+                if(ordersList.isEmpty()) {
+                    Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                    finish();
+                }else{
+                    list_of_orders.setAdapter(new OrderAdapter(context, ordersList, true));
+                }
 
                 try{
                     Log.e("Admin Orders Failure", response.toString()+"");
@@ -133,7 +180,29 @@ public class AdminOrdersList extends AppCompatActivity {
 
                 Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
 
-                finish();
+                if ( (sharedPreferences.getString("ErrType", "").equals("")) || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 60000)) {
+
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("ErrType", "Timeout");
+                    editor.putString("Activity", "AdminOrder");
+                    editor.putLong("timestamp", System.currentTimeMillis());
+                    editor.commit();
+                    Log.d("EDITOR", System.currentTimeMillis() + "");
+                } else {
+                    Log.d("NOT EDITOR", sharedPreferences.getLong("timestamp", 0) + "");
+                }
+
+                Type type = new TypeToken<List<Order>>(){}.getType();
+                Gson gson = new Gson();
+                String jsonOrder = sharedPreferences.getString("listOfOrdersAdmin", "");
+                List<Order> ordersList = gson.fromJson(jsonOrder, type);
+
+                if(ordersList.isEmpty()) {
+                    Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                    finish();
+                }else{
+                    list_of_orders.setAdapter(new OrderAdapter(context, ordersList, true));
+                }
 
 
                 try{

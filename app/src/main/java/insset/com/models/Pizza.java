@@ -31,4 +31,13 @@ public class Pizza {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Pizza{" +
+                "id=" + id +
+                ", price=" + price +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
