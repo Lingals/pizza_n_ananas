@@ -49,7 +49,23 @@ public class AdminOrdersList extends AppCompatActivity {
 
         initializeFields();
 
-        getOrders();
+
+        if(sharedPreferences.getLong("timestamp", 0) == 0 || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 120000)){
+            getOrders();
+        }else{
+            Type type = new TypeToken<List<Order>>(){}.getType();
+            Gson gson = new Gson();
+            String jsonOrder = sharedPreferences.getString("listOfOrdersAdmin", "");
+            List<Order> ordersList = gson.fromJson(jsonOrder, type);
+
+            if(ordersList.isEmpty()) {
+                Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                finish();
+            }else{
+                list_of_orders.setAdapter(new OrderAdapter(context, ordersList, true));
+            }
+        }
+
     }
 
     public void initializeFields(){
@@ -118,6 +134,12 @@ public class AdminOrdersList extends AppCompatActivity {
                 }
 
                 list_of_orders.setAdapter(new OrderAdapter(context, orderList, true));
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("ErrType", "");
+                editor.putString("Activity", "");
+                editor.putLong("timestamp", 0);
+                editor.commit();
 
 
                 if (progressDialog.isShowing())
@@ -216,6 +238,10 @@ public class AdminOrdersList extends AppCompatActivity {
         progressDialog.setMessage("Récupération des commandes");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        client.get(Constant.host + Constant.getOrders, responseHandler);
+        if(sharedPreferences.getBoolean("Prod", true)) {
+            client.get(Constant.host + Constant.getOrders, responseHandler);
+        }else{
+            client.get(Constant.hostTest + Constant.getOrders, responseHandler);
+        }
     }
 }

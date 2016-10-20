@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,11 +38,13 @@ public class PizzaAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private List<Pizza> items = new ArrayList<Pizza>();
     private ProgressDialog progressDialog;
+    boolean prod = true;
 
-    public PizzaAdapter(Context context, List<Pizza> liste) {
+    public PizzaAdapter(Context context, List<Pizza> liste, boolean prod) {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = context;
         this.items = liste;
+        this.prod = prod;
     }
 
     @Override
@@ -151,6 +154,10 @@ public class PizzaAdapter extends BaseAdapter {
         progressDialog.setMessage("Traitement de la commande");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        client.post(context, Constant.host + Constant.postOrders, entity, "application/json", responseHandler);
+        if(prod){
+            client.post(context, Constant.host + Constant.postOrders, entity, "application/json", responseHandler);
+        }else {
+            client.post(context, Constant.hostTest + Constant.postOrders, entity, "application/json", responseHandler);
+        }
     }
 }

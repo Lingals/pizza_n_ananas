@@ -3,6 +3,7 @@ package insset.com.pizzanananas;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,7 @@ public class PizzasList extends AppCompatActivity {
 
     private PizzaAdapter pizzaAdapter;
     private List<Pizza> listPizzas = new ArrayList<>();
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class PizzasList extends AppCompatActivity {
         setTitle("Liste des pizzas");
         context = this;
         initializeFields();
+        sharedPreferences = getSharedPreferences("ERROR_LOG", MODE_PRIVATE);
         getPizzas();
 
 
@@ -76,6 +79,8 @@ public class PizzasList extends AppCompatActivity {
 
             public void onSuccess(int statusCode,Header[] headers,org.json.JSONArray response) {
 
+                Log.e("REPONSE PIZZA", response.toString()+"");
+
                 try {
 
                     for (int i = 0; i < response.length(); i++) {
@@ -88,7 +93,7 @@ public class PizzasList extends AppCompatActivity {
                         listPizzas.add(pizza);
                     }
 
-                    pizzaAdapter = new PizzaAdapter(context, listPizzas);
+                    pizzaAdapter = new PizzaAdapter(context, listPizzas, sharedPreferences.getBoolean("Prod", true));
 
                     pizzas_list_lv.setAdapter(pizzaAdapter);
 
@@ -136,7 +141,11 @@ public class PizzasList extends AppCompatActivity {
         progressDialog.setMessage("Récupération des pizzas");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        client.get(Constant.host + Constant.getPizzas, responseHandler);
+        if(sharedPreferences.getBoolean("Prod", true)) {
+            client.get(Constant.host + Constant.getPizzas, responseHandler);
+        }else{
+            client.get(Constant.hostTest + Constant.getPizzas, responseHandler);
+        }
     }
 
     // Uses an AsyncTask to download a Twitter user's timeline
