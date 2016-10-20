@@ -49,7 +49,6 @@ public class AdminOrdersList extends AppCompatActivity {
 
         initializeFields();
 
-
         if(sharedPreferences.getLong("timestamp", 0) == 0 || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 120000)){
             getOrders();
         }else{
@@ -114,6 +113,8 @@ public class AdminOrdersList extends AppCompatActivity {
                             newOrder.setPizza(newPizza);
                         }
 
+                        orderList.add(newOrder);
+
                         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
                         Gson gson = new Gson();
                         String json = gson.toJson(orderList);
@@ -126,8 +127,6 @@ public class AdminOrdersList extends AppCompatActivity {
                         List<Order> ordersList = gson2.fromJson(jsonOrder, type);
 
                         Log.i("LIST", ordersList.toString()+"");
-
-                        orderList.add(newOrder);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
