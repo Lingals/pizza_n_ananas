@@ -9,6 +9,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.librato.metrics.HttpPoster;
+import com.librato.metrics.LibratoBatch;
+import com.librato.metrics.Sanitizer;
+
+import java.util.concurrent.TimeUnit;
 
 import com.librato.metrics.BatchResult;
 import com.librato.metrics.HttpPoster;
@@ -86,6 +91,7 @@ public class HomePage extends AppCompatActivity {
         });
 
 
+
         /**
          * LIBRATO
          */
@@ -118,8 +124,6 @@ public class HomePage extends AppCompatActivity {
 
 
 
-
-
     }
 
     public void initializeFields() {
@@ -128,4 +132,5 @@ public class HomePage extends AppCompatActivity {
         mode_text = (TextView) findViewById(R.id.mode_text);
         change_domain_button = (Button) findViewById(R.id.change_domain_button);
     }
+
 }

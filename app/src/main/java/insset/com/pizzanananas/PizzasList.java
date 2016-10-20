@@ -11,13 +11,15 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +37,6 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
-import twitter4j.json.DataObjectFactory;
 
 public class PizzasList extends AppCompatActivity {
 
@@ -56,7 +57,22 @@ public class PizzasList extends AppCompatActivity {
         context = this;
         initializeFields();
         sharedPreferences = getSharedPreferences("ERROR_LOG", MODE_PRIVATE);
-        getPizzas();
+
+        if(sharedPreferences.getLong("timestamp", 0) == 0 || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 120000)){
+            getPizzas();
+        }else{
+            Type type = new TypeToken<List<Pizza>>(){}.getType();
+            Gson gson = new Gson();
+            String jsonPizza = sharedPreferences.getString("listOfPizzas", "");
+            List<Pizza> pizzasList = gson.fromJson(jsonPizza, type);
+
+            if(pizzasList.isEmpty()) {
+                Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                finish();
+            }else{
+                pizzas_list_lv.setAdapter(new PizzaAdapter(context, pizzasList, true));
+            }
+        }
 
 
     }
@@ -81,25 +97,52 @@ public class PizzasList extends AppCompatActivity {
 
                 Log.e("REPONSE PIZZA", response.toString()+"");
 
-                try {
+                sharedPreferences.edit().remove("listOfPizzas");
 
-                    for (int i = 0; i < response.length(); i++) {
-                        Pizza pizza = new Pizza();
-                        JSONObject openRequest = response.getJSONObject(i);
-                        pizza.setId(Integer.parseInt(openRequest.getString("id")));
-                        pizza.setName(openRequest.getString("name"));
-                        pizza.setPrice(Integer.parseInt(openRequest.getString("price")));
+                JSONObject openRequest;
+
+                for (int i = 0; i < response.length(); i++) {
+                    Pizza pizza = new Pizza();
+
+                    try {
+                        openRequest = response.getJSONObject(i);
+                        if (openRequest.has("id")) {
+                            pizza.setId(Integer.parseInt(openRequest.getString("id")));
+                        }
+                        if (openRequest.has("name")) {
+                            pizza.setName(openRequest.getString("name"));
+                        }
+                        if (openRequest.has("price")) {
+                            pizza.setPrice(Integer.parseInt(openRequest.getString("price")));
+                        }
 
                         listPizzas.add(pizza);
+
+                        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(listPizzas);
+                        prefsEditor.putString("listOfPizzas", json);
+                        prefsEditor.commit();
+
+                        Type type = new TypeToken<List<Pizza>>(){}.getType();
+                        Gson gson2 = new Gson();
+                        String jsonPizza = sharedPreferences.getString("listOfPizzas", "");
+                        List<Pizza> pizzasList = gson2.fromJson(jsonPizza, type);
+
+                        Log.i("LIST", pizzasList.toString()+"");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-                    pizzaAdapter = new PizzaAdapter(context, listPizzas, sharedPreferences.getBoolean("Prod", true));
-
-                    pizzas_list_lv.setAdapter(pizzaAdapter);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
+
+                pizzas_list_lv.setAdapter(new PizzaAdapter(context, listPizzas, sharedPreferences.getBoolean("Prod", true)));
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("ErrType", "");
+                editor.putString("Activity", "");
+                editor.putLong("timestamp", 0);
+                editor.commit();
 
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
@@ -108,33 +151,104 @@ public class PizzasList extends AppCompatActivity {
                     Toast.makeText(context, "Aucune pizza disponible", Toast.LENGTH_LONG).show();
                 }
 
-                /*try{
+                try{
                     Log.e("Pizza list", response.toString() + "");
                 }catch(Exception e){
 
-                }*/
+                }
+
+                Log.i("LE MEC 0", sharedPreferences.getString("listOfPizzas", ""));
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
-                Toast.makeText(context, "Une erreur serveur est survenue", Toast.LENGTH_LONG).show();
+                if ( (sharedPreferences.getString("ErrType", "").equals("")) || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 60000)) {
 
-                DownloadTwitterTask dtt = new DownloadTwitterTask();
-                dtt.execute();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("ErrType", "Timeout");
+                    editor.putString("Activity", "PizzasList");
+                    editor.putLong("timestamp", System.currentTimeMillis());
+                    editor.commit();
+                    Log.d("EDITOR", System.currentTimeMillis() + "");
+                } else {
+                    Log.d("NOT EDITOR", sharedPreferences.getLong("timestamp", 0) + "");
+                }
+
+                Type type = new TypeToken<List<Pizza>>(){}.getType();
+                Gson gson = new Gson();
+                String jsonPizza = sharedPreferences.getString("listOfPizzas", "");
+                List<Pizza> pizzaList = gson.fromJson(jsonPizza, type);
+
+                if(pizzaList.isEmpty()) {
+                    Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                    finish();
+                }else{
+                    pizzas_list_lv.setAdapter(new PizzaAdapter(context, pizzaList, sharedPreferences.getBoolean("Prod", true)));
+                }
+
+                Log.i("LE MEC 1", sharedPreferences.getString("listOfPizzas", ""));
+            }
+
+            public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONArray response) {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+
+                if ( (sharedPreferences.getString("ErrType", "").equals("")) || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 60000)) {
+
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("ErrType", "Timeout");
+                    editor.putString("Activity", "PizzasList");
+                    editor.putLong("timestamp", System.currentTimeMillis());
+                    editor.commit();
+                    Log.d("EDITOR", System.currentTimeMillis() + "");
+                } else {
+                    Log.d("NOT EDITOR", sharedPreferences.getLong("timestamp", 0) + "");
+                }
+
+                Type type = new TypeToken<List<Pizza>>(){}.getType();
+                Gson gson = new Gson();
+                String jsonPizza = sharedPreferences.getString("listOfPizzas", "");
+                List<Pizza> pizzaList = gson.fromJson(jsonPizza, type);
+
+                if(pizzaList.isEmpty()) {
+                    Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                    finish();
+                }else{
+                    pizzas_list_lv.setAdapter(new PizzaAdapter(context, pizzaList, sharedPreferences.getBoolean("Prod", true) ));
+                }
+
+                Log.i("LE MEC 2", sharedPreferences.getString("listOfPizzas", ""));
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
-                Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                if ( (sharedPreferences.getString("ErrType", "").equals("")) || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 60000)) {
 
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("ErrType", "Timeout");
+                    editor.putString("Activity", "PizzasList");
+                    editor.putLong("timestamp", System.currentTimeMillis());
+                    editor.commit();
+                    Log.d("EDITOR", System.currentTimeMillis() + "");
+                } else {
+                    Log.d("NOT EDITOR", sharedPreferences.getLong("timestamp", 0) + "");
+                }
 
-                DownloadTwitterTask dtt = new DownloadTwitterTask();
-                dtt.execute();
+                Type type = new TypeToken<List<Pizza>>(){}.getType();
+                Gson gson = new Gson();
+                String jsonPizza = sharedPreferences.getString("listOfPizzas", "");
+                List<Pizza> pizzaList = gson.fromJson(jsonPizza, type);
 
+                if(pizzaList.isEmpty()) {
+                    Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                    finish();
+                }else{
+                    pizzas_list_lv.setAdapter(new PizzaAdapter(context, pizzaList, sharedPreferences.getBoolean("Prod", true) ));
+                }
             }
         };
         progressDialog = new ProgressDialog(context);
@@ -166,6 +280,7 @@ public class PizzasList extends AppCompatActivity {
             Twitter twitter = new TwitterFactory(builder.build()).getInstance(accessToken);
             ResponseList<twitter4j.Status> responseTw = null;
             try {
+
                 responseTw = twitter.getUserTimeline();
                 Log.d("TWITTER", responseTw.toString());
                 if (responseTw.size()>0){
