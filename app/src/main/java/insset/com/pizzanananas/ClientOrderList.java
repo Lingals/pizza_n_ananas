@@ -3,6 +3,7 @@ package insset.com.pizzanananas;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -36,6 +37,7 @@ public class ClientOrderList extends AppCompatActivity {
     ProgressDialog progressDialog;
     List<Order> orderList = new ArrayList<>();
     OrderAdapter orderAdapter;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,8 @@ public class ClientOrderList extends AppCompatActivity {
         setTitle("Liste des commandes");
 
         context = this;
+
+        sharedPreferences = getSharedPreferences("ERROR_LOG", MODE_PRIVATE);
 
         initializeFields();
 
@@ -208,7 +212,11 @@ public class ClientOrderList extends AppCompatActivity {
         progressDialog.setMessage("Récupération des commandes");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        client.get(Constant.host + Constant.getOrders + "/" + id + "", responseHandler);
+        if(sharedPreferences.getBoolean("Prod", true)) {
+            client.get(Constant.host + Constant.getOrders + "/" + id + "", responseHandler);
+        }else{
+            client.get(Constant.hostTest + Constant.getOrders + "/" + id + "", responseHandler);
+        }
     }
 
 }
