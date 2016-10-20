@@ -32,6 +32,7 @@ import insset.com.adapters.OrderAdapter;
 import insset.com.models.Order;
 import insset.com.models.Pizza;
 import insset.com.utils.Constant;
+import insset.com.utils.Lilibrato;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -49,6 +50,9 @@ public class ClientOrderList extends AppCompatActivity {
     List<Order> orderList = new ArrayList<>();
     OrderAdapter orderAdapter;
     SharedPreferences sharedPreferences;
+
+    long dateStart = 0,
+            dateEnd = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +75,8 @@ public class ClientOrderList extends AppCompatActivity {
         if (idPizza != null && !idPizza.equals("")) {
             editText_client_order_list.setText(idPizza);
 
+            dateStart = System.currentTimeMillis();
+
             getOrders(idPizza);
         }
 
@@ -78,6 +84,8 @@ public class ClientOrderList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (!editText_client_order_list.getText().toString().isEmpty()) {
+
+                    dateStart = System.currentTimeMillis();
                     getOrders(editText_client_order_list.getText().toString());
                 }
             }
@@ -107,6 +115,10 @@ public class ClientOrderList extends AppCompatActivity {
 
 
             public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject orderJson) {
+
+                dateEnd = System.currentTimeMillis();
+
+                Lilibrato.goGoLibratoGo("PizzaNananas.ClientOrderList", "times", dateStart, dateEnd);
 
                 Order newOrder = new Order();
                 try {
