@@ -109,7 +109,7 @@ public class HomePage extends AppCompatActivity {
             Sanitizer sanitizer = Sanitizer.NO_OP;
             LibratoBatch batch = new LibratoBatch(batchSize, sanitizer, timeout, timeoutUnit, null, poster);
 
-            batch.addGaugeMeasurement("apples", 100);
+            batch.addGaugeMeasurement("times", 100);
             batch.addCounterMeasurement("bytes-in", (long) 42);
 
 
