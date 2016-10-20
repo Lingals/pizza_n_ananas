@@ -6,7 +6,7 @@ package insset.com.utils;
 public class Constant {
 
     public static final String host = "http://pizzapi.herokuapp.com";
-    public static final String hostTest = "http://10.3.134.19:8080/api";
+    public static final String hostTest = "http://10.3.134.12:8080/";
     public static final String getPizzas = "/pizzas";
     public static final String postOrders = "/orders";
     public static final String getOrders = "/orders";

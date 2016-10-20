@@ -8,6 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.librato.metrics.DefaultHttpPoster;
+import com.librato.metrics.HttpPoster;
+import com.librato.metrics.LibratoBatch;
+import com.librato.metrics.Sanitizer;
+
+import java.util.concurrent.TimeUnit;
 
 public class HomePage extends AppCompatActivity {
 
@@ -67,6 +73,8 @@ public class HomePage extends AppCompatActivity {
                 }
             }
         });
+
+        createBatch();
     }
 
     public void initializeFields() {
@@ -74,5 +82,20 @@ public class HomePage extends AppCompatActivity {
         home_page_admin_b = (Button) findViewById(R.id.home_page_admin_b);
         mode_text = (TextView) findViewById(R.id.mode_text);
         change_domain_button = (Button) findViewById(R.id.change_domain_button);
+    }
+
+    public void createBatch(){
+
+        String email = "p.pavone59@gmail.com";
+        String apiToken = "0a91966093a98d55d5f11ddf8fef5194c3a68517cac6ab90ff1bfe9a83cdafa4";
+        String apiUrl = "https://metrics.librato.com/s/metrics";
+        HttpPoster poster = new DefaultHttpPoster(apiUrl, email, apiToken);
+
+        int batchSize = 300;
+        long timeout = 10L;
+        TimeUnit timeoutUnit = TimeUnit.SECONDS;
+        //static String agent = `your http agent name -- will be saved with your metric`
+        Sanitizer sanitizer = Sanitizer.NO_OP ;// or, supply your own
+        LibratoBatch batch = new LibratoBatch(batchSize, sanitizer, timeout, timeoutUnit, null, poster);
     }
 }
