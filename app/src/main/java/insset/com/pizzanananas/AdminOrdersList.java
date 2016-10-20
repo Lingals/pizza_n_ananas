@@ -26,6 +26,7 @@ import insset.com.adapters.OrderAdapter;
 import insset.com.models.Order;
 import insset.com.models.Pizza;
 import insset.com.utils.Constant;
+import insset.com.utils.Lilibrato;
 
 public class AdminOrdersList extends AppCompatActivity {
 
@@ -35,6 +36,9 @@ public class AdminOrdersList extends AppCompatActivity {
     List<Order> orderList = new ArrayList<>();
 
     SharedPreferences sharedPreferences;
+
+    long dateStart = 0,
+            dateEnd = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,7 @@ public class AdminOrdersList extends AppCompatActivity {
         initializeFields();
 
         if(sharedPreferences.getLong("timestamp", 0) == 0 || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 120000)){
+            dateStart = System.currentTimeMillis();
             getOrders();
         }else{
             Type type = new TypeToken<List<Order>>(){}.getType();
@@ -84,6 +89,10 @@ public class AdminOrdersList extends AppCompatActivity {
 
 
             public void onSuccess(int statusCode,Header[] headers,org.json.JSONArray response) {
+
+                dateEnd = System.currentTimeMillis();
+
+                Lilibrato.goGoLibratoGo("PizzaNananas.AdminOrdersList", "times", dateStart, dateEnd);
 
                 sharedPreferences.edit().remove("listOfOrdersAdmin");
 

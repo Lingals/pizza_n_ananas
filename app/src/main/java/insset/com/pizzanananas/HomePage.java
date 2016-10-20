@@ -5,33 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import com.librato.metrics.HttpPoster;
-import com.librato.metrics.LibratoBatch;
-import com.librato.metrics.Sanitizer;
-
-import java.util.concurrent.TimeUnit;
-
-import com.librato.metrics.BatchResult;
-import com.librato.metrics.HttpPoster;
-import com.librato.metrics.LibratoBatch;
-import com.librato.metrics.PostResult;
-import com.librato.metrics.Sanitizer;
-
-import java.util.concurrent.TimeUnit;
-
-import insset.com.librato.DefaultHttpPoster;
 
 
 public class HomePage extends AppCompatActivity {
-
-    static String email = "p.pavone59@gmail.com";
-    static String apiToken = "d77e3da0ff40b4d1949ad99702fdf5675f4a2aeed3c6f8f6acd59ffcb6832e8d";
-    static String apiUrl = "https://metrics-api.librato.com/v1/metrics";
-    static HttpPoster poster;
 
     private Button home_page_client_b,
             home_page_admin_b, change_domain_button;
@@ -89,40 +68,6 @@ public class HomePage extends AppCompatActivity {
                 }
             }
         });
-
-
-
-        /**
-         * LIBRATO
-         */
-
-
-
-
-            Log.e("ENVOI", apiUrl+" "+email+" "+apiToken);
-            poster = new DefaultHttpPoster(apiUrl, email, apiToken);
-
-
-            int batchSize = 300;
-            long timeout = 10L;
-            TimeUnit timeoutUnit = TimeUnit.SECONDS;
-            Sanitizer sanitizer = Sanitizer.NO_OP;
-            LibratoBatch batch = new LibratoBatch(batchSize, sanitizer, timeout, timeoutUnit, null, poster);
-
-            batch.addGaugeMeasurement("times", 100);
-            batch.addCounterMeasurement("bytes-in", (long) 42);
-
-
-            long epoch = System.currentTimeMillis() / 1000;
-            String source = "Android";
-            BatchResult result = batch.post(source, epoch);
-            if (!result.success()) {
-                for (PostResult post : result.getFailedPosts()) {
-                    Log.e("Not POST to Librato", post.toString() + "");
-                }
-            }
-
-
 
     }
 

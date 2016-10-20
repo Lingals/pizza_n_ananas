@@ -31,6 +31,7 @@ import cz.msebera.android.httpclient.Header;
 import insset.com.adapters.PizzaAdapter;
 import insset.com.models.Pizza;
 import insset.com.utils.Constant;
+import insset.com.utils.Lilibrato;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -49,6 +50,9 @@ public class PizzasList extends AppCompatActivity {
     private List<Pizza> listPizzas = new ArrayList<>();
     SharedPreferences sharedPreferences;
 
+    long dateStart = 0,
+            dateEnd = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +63,7 @@ public class PizzasList extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("ERROR_LOG", MODE_PRIVATE);
 
         if(sharedPreferences.getLong("timestamp", 0) == 0 || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 120000)){
+            dateStart = System.currentTimeMillis();
             getPizzas();
         }else{
             Type type = new TypeToken<List<Pizza>>(){}.getType();
@@ -94,6 +99,10 @@ public class PizzasList extends AppCompatActivity {
 
 
             public void onSuccess(int statusCode,Header[] headers,org.json.JSONArray response) {
+
+                dateEnd = System.currentTimeMillis();
+
+                Lilibrato.goGoLibratoGo("PizzaNananas.PizzasList", "times", dateStart, dateEnd);
 
                 Log.e("REPONSE PIZZA", response.toString()+"");
 
