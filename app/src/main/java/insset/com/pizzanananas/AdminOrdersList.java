@@ -59,8 +59,10 @@ public class AdminOrdersList extends AppCompatActivity {
 
         if(sharedPreferences.getLong("timestamp", 0) == 0 || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 120000)){
             dateStart = System.currentTimeMillis();
+            lilibrato.setCircuitBreaker(0);
             getOrders();
         }else{
+            lilibrato.setCircuitBreaker(1);
             Type type = new TypeToken<List<Order>>(){}.getType();
             Gson gson = new Gson();
             String jsonOrder = sharedPreferences.getString("listOfOrdersAdmin", "");

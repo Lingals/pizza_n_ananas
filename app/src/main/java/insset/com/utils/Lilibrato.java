@@ -41,7 +41,6 @@ public class Lilibrato {
         int times = (int) (timeEnd - timeStart);
 
         batch.addGaugeMeasurement(this.classe + "." + "times", times);
-        batch.addCounterMeasurement("bytes-in", (long) 42);
 
 
         long epoch = System.currentTimeMillis() / 1000;
@@ -65,6 +64,29 @@ public class Lilibrato {
         LibratoBatch batch = new LibratoBatch(batchSize, sanitizer, timeout, timeoutUnit, null, poster);
 
         batch.addGaugeMeasurement(this.classe + "." + "status" + Integer.toString(status), status);
+
+
+        long epoch = System.currentTimeMillis() / 1000;
+        String source = "Android";
+        BatchResult result = batch.post(source, epoch);
+        if (!result.success()) {
+            for (PostResult post : result.getFailedPosts()) {
+                Log.e("Not POST to Librato", post.toString() + "");
+            }
+        }
+    }
+
+    public void setCircuitBreaker(int c) {
+        Log.e("ENVOI", apiUrl + " " + email + " " + apiToken);
+        poster = new DefaultHttpPoster(apiUrl, email, apiToken);
+
+        int batchSize = 300;
+        long timeout = 10L;
+        TimeUnit timeoutUnit = TimeUnit.SECONDS;
+        Sanitizer sanitizer = Sanitizer.NO_OP;
+        LibratoBatch batch = new LibratoBatch(batchSize, sanitizer, timeout, timeoutUnit, null, poster);
+
+        batch.addGaugeMeasurement(this.classe + "." + "circuitBreaker", c);
 
 
         long epoch = System.currentTimeMillis() / 1000;

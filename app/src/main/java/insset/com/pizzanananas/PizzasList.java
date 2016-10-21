@@ -68,8 +68,10 @@ public class PizzasList extends AppCompatActivity {
 
         if(sharedPreferences.getLong("timestamp", 0) == 0 || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 120000)){
             dateStart = System.currentTimeMillis();
+            lilibrato.setCircuitBreaker(0);
             getPizzas();
         }else{
+            lilibrato.setCircuitBreaker(1);
             Type type = new TypeToken<List<Pizza>>(){}.getType();
             Gson gson = new Gson();
             String jsonPizza = sharedPreferences.getString("listOfPizzas", "");
