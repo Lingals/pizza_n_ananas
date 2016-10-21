@@ -68,6 +68,7 @@ public class HomePage extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     public void initializeFields() {
