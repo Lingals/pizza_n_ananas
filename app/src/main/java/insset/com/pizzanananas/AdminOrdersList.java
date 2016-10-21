@@ -37,6 +37,8 @@ public class AdminOrdersList extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
 
+    Lilibrato lilibrato = null;
+
     long dateStart = 0,
             dateEnd = 0;
 
@@ -50,6 +52,8 @@ public class AdminOrdersList extends AppCompatActivity {
         context = this;
 
         sharedPreferences = getSharedPreferences("ERROR_LOG", MODE_PRIVATE);
+
+        lilibrato = new Lilibrato("PizzaNananas.AdminOrdersList");
 
         initializeFields();
 
@@ -92,7 +96,8 @@ public class AdminOrdersList extends AppCompatActivity {
 
                 dateEnd = System.currentTimeMillis();
 
-                Lilibrato.goGoLibratoGo("PizzaNananas.AdminOrdersList", "times", dateStart, dateEnd);
+                lilibrato.setTimes(dateStart, dateEnd);
+                lilibrato.setStatus(statusCode);
 
                 sharedPreferences.edit().remove("listOfOrdersAdmin");
 
@@ -166,6 +171,9 @@ public class AdminOrdersList extends AppCompatActivity {
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
+
+                lilibrato.setStatus(statusCode);
+
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
@@ -205,6 +213,9 @@ public class AdminOrdersList extends AppCompatActivity {
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
+
+                lilibrato.setStatus(statusCode);
+
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 

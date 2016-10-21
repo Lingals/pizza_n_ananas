@@ -50,6 +50,8 @@ public class PizzasList extends AppCompatActivity {
     private List<Pizza> listPizzas = new ArrayList<>();
     SharedPreferences sharedPreferences;
 
+    Lilibrato lilibrato = null;
+
     long dateStart = 0,
             dateEnd = 0;
 
@@ -61,6 +63,8 @@ public class PizzasList extends AppCompatActivity {
         context = this;
         initializeFields();
         sharedPreferences = getSharedPreferences("ERROR_LOG", MODE_PRIVATE);
+
+        lilibrato = new Lilibrato("PizzaNananas.PizzasList");
 
         if(sharedPreferences.getLong("timestamp", 0) == 0 || (System.currentTimeMillis() > sharedPreferences.getLong("timestamp", 0) + 120000)){
             dateStart = System.currentTimeMillis();
@@ -102,9 +106,10 @@ public class PizzasList extends AppCompatActivity {
 
                 dateEnd = System.currentTimeMillis();
 
-                Lilibrato.goGoLibratoGo("PizzaNananas.PizzasList", "times", dateStart, dateEnd);
+                lilibrato.setTimes(dateStart, dateEnd);
+                lilibrato.setStatus(statusCode);
 
-                Log.e("REPONSE PIZZA", response.toString()+"");
+                Log.e("REPONSE PIZZA", response.toString() + "");
 
                 sharedPreferences.edit().remove("listOfPizzas");
 
@@ -170,6 +175,9 @@ public class PizzasList extends AppCompatActivity {
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
+
+                lilibrato.setStatus(statusCode);
+
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
@@ -201,6 +209,9 @@ public class PizzasList extends AppCompatActivity {
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONArray response) {
+
+                lilibrato.setStatus(statusCode);
+
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
@@ -232,6 +243,9 @@ public class PizzasList extends AppCompatActivity {
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
+
+                lilibrato.setStatus(statusCode);
+
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 

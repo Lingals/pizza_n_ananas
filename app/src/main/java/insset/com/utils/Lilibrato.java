@@ -22,11 +22,15 @@ public class Lilibrato {
     static String apiUrl = "https://metrics-api.librato.com/v1/metrics";
     static HttpPoster poster;
 
-    static public void goGoLibratoGo(String classe, String search, long timeStart, long timeEnd) {
+    String classe = "";
 
+    public Lilibrato(String classe) {
+        this.classe = classe;
+    }
+
+    public void setTimes(long timeStart, long timeEnd) {
         Log.e("ENVOI", apiUrl + " " + email + " " + apiToken);
         poster = new DefaultHttpPoster(apiUrl, email, apiToken);
-
 
         int batchSize = 300;
         long timeout = 10L;
@@ -34,13 +38,33 @@ public class Lilibrato {
         Sanitizer sanitizer = Sanitizer.NO_OP;
         LibratoBatch batch = new LibratoBatch(batchSize, sanitizer, timeout, timeoutUnit, null, poster);
 
-        if (search.equals("times")) {
-            int times = (int) (timeEnd - timeStart);
+        int times = (int) (timeEnd - timeStart);
 
-            batch.addGaugeMeasurement(classe + "." + "times", times);
-        }
-
+        batch.addGaugeMeasurement(this.classe + "." + "times", times);
         batch.addCounterMeasurement("bytes-in", (long) 42);
+
+
+        long epoch = System.currentTimeMillis() / 1000;
+        String source = "Android";
+        BatchResult result = batch.post(source, epoch);
+        if (!result.success()) {
+            for (PostResult post : result.getFailedPosts()) {
+                Log.e("Not POST to Librato", post.toString() + "");
+            }
+        }
+    }
+
+    public void setStatus(int status) {
+        Log.e("ENVOI", apiUrl + " " + email + " " + apiToken);
+        poster = new DefaultHttpPoster(apiUrl, email, apiToken);
+
+        int batchSize = 300;
+        long timeout = 10L;
+        TimeUnit timeoutUnit = TimeUnit.SECONDS;
+        Sanitizer sanitizer = Sanitizer.NO_OP;
+        LibratoBatch batch = new LibratoBatch(batchSize, sanitizer, timeout, timeoutUnit, null, poster);
+
+        batch.addGaugeMeasurement(this.classe + "." + "status" + Integer.toString(status), status);
 
 
         long epoch = System.currentTimeMillis() / 1000;

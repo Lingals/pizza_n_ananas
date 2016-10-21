@@ -51,6 +51,8 @@ public class ClientOrderList extends AppCompatActivity {
     OrderAdapter orderAdapter;
     SharedPreferences sharedPreferences;
 
+    Lilibrato lilibrato = null;
+
     long dateStart = 0,
             dateEnd = 0;
 
@@ -64,6 +66,8 @@ public class ClientOrderList extends AppCompatActivity {
         context = this;
 
         sharedPreferences = getSharedPreferences("ERROR_LOG", MODE_PRIVATE);
+
+        lilibrato = new Lilibrato("PizzaNananas.ClientOrderList");
 
         initializeFields();
 
@@ -118,7 +122,8 @@ public class ClientOrderList extends AppCompatActivity {
 
                 dateEnd = System.currentTimeMillis();
 
-                Lilibrato.goGoLibratoGo("PizzaNananas.ClientOrderList", "times", dateStart, dateEnd);
+                lilibrato.setTimes(dateStart, dateEnd);
+                lilibrato.setStatus(statusCode);
 
                 Order newOrder = new Order();
                 try {
@@ -168,6 +173,9 @@ public class ClientOrderList extends AppCompatActivity {
             }
 
             public void onFailure(int statusCode,Header[] headers, Throwable throwable,	org.json.JSONObject response) {
+
+                lilibrato.setStatus(statusCode);
+
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
@@ -213,6 +221,9 @@ public class ClientOrderList extends AppCompatActivity {
             }
 
             public void onFailure(int statusCode,Header[] headers,String result, Throwable throwable) {
+
+                lilibrato.setStatus(statusCode);
+
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
